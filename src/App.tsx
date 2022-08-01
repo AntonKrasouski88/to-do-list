@@ -1,33 +1,54 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {TodoList} from "./TodoList";
 import {TaskType} from "./TodoList";
 
-//GRUD - create read update delete
+
+//CRUD - create read update delete
 //GUI - graphic user interface
+//CLI - древний Common line interface
+
+
+export type FilterValuesType = "all" | "active" | "completed"
 
 function App() {
-    const tasks_1: Array<TaskType> = [
+    const [tasks, setTasks] = useState<Array<TaskType>>([
         {id: 1, title: "HTML", isDone: true},
         {id: 2, title: "CSS", isDone: true},
-        {id: 3, title: "JS/TS", isDone: false}
-    ]
-    const tasks_2: Array<TaskType> = [
-        {id: 1, title: "React", isDone: true},
-        {id: 2, title: "Angular", isDone: false},
-        {id: 3, title: "Vue", isDone: false}
-    ]
-    const tasks_3: Array<TaskType> = [
-        {id: 1, title: "PHP", isDone: false},
-        {id: 2, title: "Python", isDone: false},
-        {id: 3, title: "Go", isDone: false}
-    ]
+        {id: 3, title: "JS/TS", isDone: false},
+        {id: 4, title: "React", isDone: true},
+    ])
+
+    const[filter, setFilter] = React.useState<FilterValuesType>("all")
+
+    const onChangeFilter = (filter: FilterValuesType) => {
+        setFilter(filter)
+    }
+    const removeTask = (taskId: number) => {
+        setTasks(tasks.filter(task => task.id !== taskId))
+    }
+
+    let tasksForRender;
+    switch (filter) {
+        case "completed":
+            tasksForRender = tasks.filter(task => task.isDone)
+            break
+        case "active":
+            tasksForRender = tasks.filter(task => !task.isDone)
+            break
+        default:
+            tasksForRender = tasks
+    }
+
 
     return (
         <div className="App">
-            <TodoList tasks = {tasks_1} title= "What to learn"/>
-            <TodoList tasks = {tasks_2} title= "What to study"/>
-            <TodoList tasks = {tasks_3} title= "What to read"/>
+            <TodoList
+                tasks={tasksForRender}
+                title={"What to learn"}
+                removeTask={removeTask}
+                onChangeFilter={onChangeFilter}
+            />
         </div>
     );
 }
