@@ -84,7 +84,14 @@ function App() {
     function addTitle (title: string) {
         let newTodoLists: todoListsType = {id: v1(), title: title, filter: "all"}
         setTodoLists([...todoLists, newTodoLists]);
-        setTasks({...tasks, [newTodoLists.id]: []})
+        setTasks({[newTodoLists.id]: [],...tasks})
+    }
+    function changeTitleTask (todoListed: string, taskId: string, newTitle: string) {
+        setTasks({...tasks, [todoListed]: tasks[todoListed].map(value => value.id === taskId ? {...value, title: newTitle}: value)})
+    }
+
+    function changeListName (todoListedID: string, newTitle: string) {
+        setTodoLists([...todoLists.map(value=> value.id===todoListedID ? {...value, title: newTitle}: value)])
     }
 
 
@@ -114,6 +121,8 @@ function App() {
                             addTask={addTask}
                             changeTaskStatus={changeStatus}
                             filter={value.filter}
+                            changeTitleTask = {changeTitleTask}
+                            changeListName={changeListName}
                         />
                     )
                 })
